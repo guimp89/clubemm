@@ -15,7 +15,7 @@
     "createAccount": "Criar conta"
   },
   "Sidebar": {
-    "title": "CRM para WhatsApp",
+    "title": "Clube Melissa CRM",
     "dashboard": "Painel",
     "inbox": "Caixa de entrada",
     "notifications": "Notificações",
@@ -1275,7 +1275,7 @@
       "labelTooLong": "O rótulo deve ter {max} caracteres ou menos",
       "copied": "Link de convite copiado",
       "clipboardBlocked": "Área de transferência bloqueada — copie o link manualmente",
-      "whatsappMessage": "Entre em {accountName} no wacrm usando este link (válido por {expiresInDays} dias): {url}"
+      "whatsappMessage": "Entre em {accountName} no Clube Melissa CRM usando este link (válido por {expiresInDays} dias): {url}"
     },
     "tagsAndFields": {
       "title": "Campos e etiquetas",
@@ -1386,8 +1386,8 @@
       "saveResubmit": "Salvar e reenviar",
       "submitApproval": "Enviar para aprovação",
       "deleteDialogTitle": "Excluir modelo?",
-      "deleteMetaDesc": "\"{name}\" será excluído da Meta e do wacrm. Disparos ativos que usam este modelo começarão a falhar no próximo envio. Isso não pode ser desfeito.",
-      "deleteLocalDesc": "\"{name}\" será excluído do wacrm. Ele nunca foi enviado à Meta, então nenhuma limpeza remota é necessária.",
+      "deleteMetaDesc": "\"{name}\" será excluído da Meta e do Clube Melissa CRM. Disparos ativos que usam este modelo começarão a falhar no próximo envio. Isso não pode ser desfeito.",
+      "deleteLocalDesc": "\"{name}\" será excluído do Clube Melissa CRM. Ele nunca foi enviado à Meta, então nenhuma limpeza remota é necessária.",
       "deleting": "Excluindo…",
       "delete": "Excluir",
       "toastLoadFailed": "Falha ao carregar modelos",
@@ -1428,7 +1428,7 @@
       "notConnected": "Não conectado",
       "connectedDesc": "Seu token de acesso autentica com a Meta. Veja o status de registro abaixo para saber se os webhooks estão realmente conectados.",
       "notConnectedDesc": "Configure suas credenciais da API da Meta abaixo para conectar sua conta do WhatsApp Business.",
-      "registered": "Registrado — a Meta vai entregar eventos ao wacrm",
+      "registered": "Registrado — a Meta vai entregar eventos ao Clube Melissa CRM",
       "notRegistered": "Não registrado — a Meta não vai entregar eventos",
       "verifyWithMeta": "Verificar com a Meta",
       "subscribedSince": "Inscrito desde {date}. Clique em Verificar com a Meta se os eventos pararem de chegar.",
@@ -1452,7 +1452,7 @@
       "twoStepPin": "PIN de verificação em duas etapas",
       "optional": "(opcional)",
       "pinPlaceholder": "PIN de 6 dígitos do Meta WhatsApp Manager",
-      "pinHint": "Necessário apenas para conectar mensagens recebidas de um número de produção. Defina-o no Meta Business Manager → Contas do WhatsApp → Números de telefone → Verificação em duas etapas, depois cole aqui para que o wacrm possa inscrever o número — caso contrário, a Meta encaminha eventos recebidos para o último app que reivindicou o número (o sintoma que afeta o segundo número em uma WABA compartilhada). Números de teste da Meta não têm PIN e já vêm registrados — deixe em branco para eles. Deixar em branco também mantém um registro existente sem alterações.",
+      "pinHint": "Necessário apenas para conectar mensagens recebidas de um número de produção. Defina-o no Meta Business Manager → Contas do WhatsApp → Números de telefone → Verificação em duas etapas, depois cole aqui para que o Clube Melissa CRM possa inscrever o número — caso contrário, a Meta encaminha eventos recebidos para o último app que reivindicou o número (o sintoma que afeta o segundo número em uma WABA compartilhada). Números de teste da Meta não têm PIN e já vêm registrados — deixe em branco para eles. Deixar em branco também mantém um registro existente sem alterações.",
       "webhookTitle": "Configuração do webhook",
       "webhookDesc": "Use esta URL como retorno de webhook no Painel de Apps da Meta.",
       "webhookUrl": "URL de retorno do webhook",
@@ -1617,7 +1617,7 @@
     },
     "aiConfig": {
       "title": "Configuração do agente",
-      "description": "Use sua própria chave da OpenAI ou Anthropic. O wacrm chama o provedor diretamente com sua chave — sem taxas de IA por assento, e seus dados continuam seus. Isso alimenta as respostas rascunhadas por IA na caixa de entrada, o bot de resposta automática e o Playground.",
+      "description": "Use sua própria chave da OpenAI ou Anthropic. O Clube Melissa CRM chama o provedor diretamente com sua chave — sem taxas de IA por assento, e seus dados continuam seus. Isso alimenta as respostas rascunhadas por IA na caixa de entrada, o bot de resposta automática e o Playground.",
       "adminOnlyConfig": "Somente administradores e proprietários podem mudar a configuração de IA.",
       "loadFailed": "Falha ao carregar configuração de IA",
       "providerAndKey": "Provedor e chave",
