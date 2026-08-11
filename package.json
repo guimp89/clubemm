@@ -1,17 +1,17 @@
 {
-  "name": "wacrm",
+  "name": "clube-melissa-crm",
   "version": "0.8.0",
   "private": true,
-  "description": "Self-hostable CRM template for WhatsApp built on Next.js and Supabase — shared inbox, contacts, sales pipelines, broadcasts, and no-code automations.",
+  "description": "CRM interno do Clube Melissa Marília para atendimento via WhatsApp — inbox compartilhado, contatos, funil de vendas, disparos e automações. Baseado no template open-source wacrm (MIT, ver LICENSE).",
   "license": "MIT",
-  "author": "Arnas Donauskas",
-  "homepage": "https://github.com/ArnasDon/wacrm",
+  "author": "Clube Melissa Marília",
+  "homepage": "https://github.com/guimp89/clubemm",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ArnasDon/wacrm.git"
+    "url": "git+https://github.com/guimp89/clubemm.git"
   },
   "bugs": {
-    "url": "https://github.com/ArnasDon/wacrm/issues"
+    "url": "https://github.com/guimp89/clubemm/issues"
   },
   "keywords": [
     "crm",

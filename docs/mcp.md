@@ -1,18 +1,18 @@
 # MCP server
 
-wacrm ships a [Model Context Protocol](https://modelcontextprotocol.io)
-server so you can drive your CRM from AI assistants — Claude Desktop,
+Clube Melissa CRM ships a [Model Context Protocol](https://modelcontextprotocol.io)
+server so you can drive the CRM from AI assistants — Claude Desktop,
 Claude Code, Cursor, and any other MCP client — in natural language:
 
 > "How many conversations are still open today?"
 > "Show the last five messages with +1 415 555 0123."
 > "Send the `order_update` template to that contact."
 
-It lives in [`mcp-server/`](../mcp-server) and is published to npm as
-[`wacrm-mcp`](https://www.npmjs.com/package/wacrm-mcp). Under the hood
-it's a thin wrapper over the [public API](./public-api.md), so every
-request is authenticated and scoped by your instance exactly like any
-other API call.
+It lives in [`mcp-server/`](../mcp-server) and can be run locally with
+`npx clube-melissa-crm-mcp` (see the [server README](../mcp-server/README.md)
+for publishing/running it). Under the hood it's a thin wrapper over the
+[public API](./public-api.md), so every request is authenticated and
+scoped by your instance exactly like any other API call.
 
 ## Quick start
 
@@ -24,12 +24,12 @@ other API call.
    ```jsonc
    {
      "mcpServers": {
-       "wacrm": {
+       "melissacrm": {
          "command": "npx",
-         "args": ["-y", "wacrm-mcp"],
+         "args": ["-y", "clube-melissa-crm-mcp"],
          "env": {
-           "WACRM_BASE_URL": "https://crm.example.com",
-           "WACRM_API_KEY": "wacrm_live_xxxxxxxxxxxxxxxxxxxxxxxx"
+           "MELISSACRM_BASE_URL": "https://crm.example.com",
+           "MELISSACRM_API_KEY": "melissacrm_live_xxxxxxxxxxxxxxxxxxxxxxxx"
          }
        }
      }
@@ -37,8 +37,8 @@ other API call.
    ```
 
 That's **read-only** — the safe default. To let the assistant change
-data or send messages, add `"WACRM_ENABLE_WRITES": "true"` (and
-`"WACRM_ENABLE_BROADCASTS": "true"` for mass sends) to `env`.
+data or send messages, add `"MELISSACRM_ENABLE_WRITES": "true"` (and
+`"MELISSACRM_ENABLE_BROADCASTS": "true"` for mass sends) to `env`.
 
 ## What it exposes
 
