@@ -10,6 +10,7 @@ import { useUnreadNotifications } from "@/hooks/use-unread-notifications";
 import {
   Bell,
   Bot,
+  BookOpen,
   Crown,
   GitBranch,
   LayoutDashboard,
@@ -102,6 +103,7 @@ const navItems: NavItem[] = [
 ];
 
 const bottomNavItems = [
+  { href: "/manual", labelKey: "manual", icon: BookOpen },
   { href: "/settings", labelKey: "settings", icon: Settings },
 ];
 
