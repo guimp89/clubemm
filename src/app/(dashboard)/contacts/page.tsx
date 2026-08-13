@@ -881,7 +881,13 @@ export default function ContactsPage() {
       <ImportModal
         open={importOpen}
         onOpenChange={setImportOpen}
-        onImported={fetchContacts}
+        onImported={() => {
+          // Import can auto-create new tags (admin+) — refresh the tag
+          // list too, not just the contact rows, so a brand-new tag
+          // shows up in "Filtrar por etiquetas" without a page reload.
+          fetchContacts();
+          fetchTags();
+        }}
       />
 
       {/* Custom Fields Manager (admin+) */}
