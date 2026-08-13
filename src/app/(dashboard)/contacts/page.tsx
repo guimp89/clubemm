@@ -90,9 +90,13 @@ export default function ContactsPage() {
   const [deleteTarget, setDeleteTarget] = useState<Contact | null>(null);
   const [deleting, setDeleting] = useState(false);
 
-  // Bulk selection (page-scoped — only the loaded rows are selectable)
+  // Bulk selection (page-scoped — only the loaded rows are selectable).
+  // `selectAllMatching` escalates a selection to "every row that matches
+  // the current search/tag filter", not just the rows currently on
+  // screen — see fetchAllMatchingIds().
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false);
+  const [selectAllMatching, setSelectAllMatching] = useState(false);
 
   // All tags for display
   const [tagsMap, setTagsMap] = useState<Record<string, Tag>>({});
@@ -209,6 +213,58 @@ export default function ContactsPage() {
     setLoading(false);
   }, [supabase, page, search, selectedTagIds, tagsMap, t]);
 
+  // Collect every contact id matching the current search/tag filter,
+  // not just the page currently on screen. Paginates in large batches
+  // (1000 at a time) so this scales to tens of thousands of rows
+  // without pulling full contact objects — mirrors the same filter
+  // logic as fetchContacts (RPC path for tags, `.or()` ilike path for
+  // free-text search), but selects only `id`.
+  const fetchAllMatchingIds = useCallback(async (): Promise<string[]> => {
+    const BATCH = 1000;
+    const term = search.trim();
+    const ids: string[] = [];
+
+    if (selectedTagIds.length > 0) {
+      let offset = 0;
+      for (;;) {
+        const { data, error } = await supabase.rpc('filter_contacts_by_tags', {
+          p_tag_ids: selectedTagIds,
+          p_search: term || null,
+          p_limit: BATCH,
+          p_offset: offset,
+        });
+        if (error) throw error;
+        const rows = (data ?? []) as { contact: { id: string } }[];
+        if (rows.length === 0) break;
+        ids.push(...rows.map((r) => r.contact.id));
+        if (rows.length < BATCH) break;
+        offset += BATCH;
+      }
+    } else {
+      let offset = 0;
+      for (;;) {
+        let query = supabase
+          .from('contacts')
+          .select('id')
+          .order('created_at', { ascending: false })
+          .range(offset, offset + BATCH - 1);
+        if (term) {
+          const like = `%${term}%`;
+          query = query.or(`name.ilike.${like},phone.ilike.${like},email.ilike.${like}`);
+        }
+        const { data, error } = await query;
+        if (error) throw error;
+        const rows = data ?? [];
+        if (rows.length === 0) break;
+        ids.push(...rows.map((r) => r.id));
+        if (rows.length < BATCH) break;
+        offset += BATCH;
+      }
+    }
+
+    return ids;
+  }, [supabase, search, selectedTagIds]);
+
   // Load-once-on-mount-ish data fetches. Each setter inside runs
   // inside an async promise completion (Supabase await), not
   // synchronously in the effect body, so the cascade the lint rule
@@ -275,6 +331,11 @@ export default function ContactsPage() {
   const someOnPageSelected = contacts.some((c) => selected.has(c.id));
 
   function toggleSelectAll() {
+    if (allOnPageSelected) {
+      // Unchecking — also drop any "every matching row" escalation,
+      // since the user is explicitly narrowing the selection back down.
+      setSelectAllMatching(false);
+    }
     setSelected((prev) => {
       const next = new Set(prev);
       if (allOnPageSelected) {
@@ -287,6 +348,9 @@ export default function ContactsPage() {
   }
 
   function toggleSelect(id: string) {
+    // Deselecting one row means the selection is no longer "every
+    // matching row" — fall back to whatever's explicitly checked.
+    if (selectAllMatching) setSelectAllMatching(false);
     setSelected((prev) => {
       const next = new Set(prev);
       if (next.has(id)) next.delete(id);
@@ -296,18 +360,50 @@ export default function ContactsPage() {
   }
 
   async function handleBulkDelete() {
-    const ids = [...selected];
-    if (ids.length === 0) return;
     setDeleting(true);
 
-    const { error } = await supabase.from('contacts').delete().in('id', ids);
+    try {
+      // Selection was escalated to "every matching row" — re-resolve
+      // the full id list right before deleting (the set could be
+      // large enough that holding it in state since the click isn't
+      // worth the memory, and doing it fresh avoids acting on a stale
+      // list if data changed in between).
+      const ids = selectAllMatching ? await fetchAllMatchingIds() : [...selected];
+      if (ids.length === 0) {
+        setDeleting(false);
+        setBulkDeleteOpen(false);
+        return;
+      }
 
-    if (error) {
-      toast.error(t('toastBulkFailedDelete'));
-    } else {
-      toast.success(t('toastBulkDeleted', { count: ids.length }));
+      // Delete in chunks — a single `.in('id', ids)` with thousands of
+      // ids risks an oversized request/URL. Chunk failures don't abort
+      // the rest; we report how many actually went through.
+      const chunkSize = 200;
+      let deletedCount = 0;
+      let hadError = false;
+      for (let i = 0; i < ids.length; i += chunkSize) {
+        const chunk = ids.slice(i, i + chunkSize);
+        const { error } = await supabase.from('contacts').delete().in('id', chunk);
+        if (error) {
+          hadError = true;
+        } else {
+          deletedCount += chunk.length;
+        }
+      }
+
+      if (deletedCount > 0) {
+        toast.success(t('toastBulkDeleted', { count: deletedCount }));
+      }
+      if (hadError) {
+        toast.error(t('toastBulkFailedDelete'));
+      }
+
       setSelected(new Set());
+      setSelectAllMatching(false);
+      setPage(0);
       fetchContacts();
+    } catch {
+      toast.error(t('toastBulkFailedDelete'));
     }
 
     setDeleting(false);
@@ -332,11 +428,15 @@ export default function ContactsPage() {
         : [...prev, tagId]
     );
     setPage(0);
+    // The filter is changing — a prior "select all matching" no longer
+    // refers to the same result set.
+    setSelectAllMatching(false);
   }
 
   function clearTagFilters() {
     setSelectedTagIds([]);
     setPage(0);
+    setSelectAllMatching(false);
   }
 
   return (
@@ -394,6 +494,7 @@ export default function ContactsPage() {
                 // Reset pagination when the query changes — the result
                 // set shrinks/grows, page N may no longer be valid.
                 setPage(0);
+                setSelectAllMatching(false);
               }}
               placeholder={t('searchPlaceholder')}
               className="pl-8 bg-card border-border text-foreground placeholder:text-muted-foreground"
@@ -500,30 +601,53 @@ export default function ContactsPage() {
 
       {/* Bulk action bar */}
       {selected.size > 0 && (
-        <div className="flex items-center justify-between gap-4 rounded-lg border border-border bg-muted/40 px-4 py-2">
-          <p className="text-sm text-foreground">
-            {t('selectedCount', { count: selected.size })}
-          </p>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setSelected(new Set())}
-              className="text-muted-foreground hover:text-foreground"
-            >
-              {t('clearSelection')}
-            </Button>
-            <GatedButton
-              variant="destructive"
-              size="sm"
-              canAct={canEdit}
-              gateReason="delete contacts"
-              onClick={() => setBulkDeleteOpen(true)}
-            >
-              <Trash2 className="size-4" />
-              {t('deleteSelected')}
-            </GatedButton>
+        <div className="flex flex-col gap-2 rounded-lg border border-border bg-muted/40 px-4 py-2">
+          <div className="flex items-center justify-between gap-4">
+            <p className="text-sm text-foreground">
+              {selectAllMatching
+                ? t('selectedCountAll', { count: totalCount })
+                : t('selectedCount', { count: selected.size })}
+            </p>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setSelected(new Set());
+                  setSelectAllMatching(false);
+                }}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                {t('clearSelection')}
+              </Button>
+              <GatedButton
+                variant="destructive"
+                size="sm"
+                canAct={canEdit}
+                gateReason="delete contacts"
+                onClick={() => setBulkDeleteOpen(true)}
+              >
+                <Trash2 className="size-4" />
+                {t('deleteSelected')}
+              </GatedButton>
+            </div>
           </div>
+
+          {/* Escalate from "this page" to "every row matching the
+              current search/tag filter" — only offered once every row
+              on the visible page is already checked, and only when
+              there's more to select than what's on screen. */}
+          {allOnPageSelected && !selectAllMatching && totalCount > contacts.length && (
+            <div className="text-sm text-muted-foreground">
+              {t('allOnPageSelectedNotice', { count: contacts.length })}{' '}
+              <button
+                onClick={() => setSelectAllMatching(true)}
+                className="font-medium text-primary hover:underline"
+              >
+                {t('selectAllMatchingLink', { count: totalCount })}
+              </button>
+            </div>
+          )}
         </div>
       )}
 
@@ -805,7 +929,7 @@ export default function ContactsPage() {
               {t('deleteBulkTitle')}
             </DialogTitle>
             <DialogDescription className="text-muted-foreground">
-              {t('deleteBulkDesc', { count: selected.size })}
+              {t('deleteBulkDesc', { count: selectAllMatching ? totalCount : selected.size })}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="bg-popover border-border">

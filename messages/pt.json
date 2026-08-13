@@ -287,6 +287,9 @@
       "clearAll": "Limpar tudo",
       "noTagsYet": "Ainda sem etiquetas.",
       "selectedCount": "{count} selecionado(s)",
+      "selectedCountAll": "Todos os {count} resultados selecionados",
+      "allOnPageSelectedNotice": "Os {count} contatos desta página estão selecionados.",
+      "selectAllMatchingLink": "Selecionar todos os {count} resultados",
       "clearSelection": "Limpar",
       "deleteSelected": "Excluir selecionados",
       "tableColumns": {

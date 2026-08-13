@@ -287,6 +287,9 @@
       "clearAll": "모두 지우기",
       "noTagsYet": "아직 태그가 없습니다.",
       "selectedCount": "{count}개 선택됨",
+      "selectedCountAll": "일치하는 {count}개 결과 모두 선택됨",
+      "allOnPageSelectedNotice": "이 페이지의 {count}개 연락처가 모두 선택되었습니다.",
+      "selectAllMatchingLink": "{count}개 결과 모두 선택",
       "clearSelection": "지우기",
       "deleteSelected": "선택 항목 삭제",
       "tableColumns": {
