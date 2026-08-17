@@ -100,14 +100,14 @@ describe("capability predicates", () => {
     expect(canEditSettings("viewer")).toBe(false);
   });
 
-  it("canSendMessages: agent+ only", () => {
+  it("canSendMessages: agent+ only (viewer blocked from acting) @spec:AC-021", () => {
     expect(canSendMessages("owner")).toBe(true);
     expect(canSendMessages("admin")).toBe(true);
     expect(canSendMessages("agent")).toBe(true);
     expect(canSendMessages("viewer")).toBe(false);
   });
 
-  it("canViewOnly: viewer only", () => {
+  it("canViewOnly: viewer only @spec:AC-021", () => {
     expect(canViewOnly("owner")).toBe(false);
     expect(canViewOnly("admin")).toBe(false);
     expect(canViewOnly("agent")).toBe(false);
@@ -121,7 +121,7 @@ describe("capability predicates", () => {
     expect(canDeleteAccount("viewer")).toBe(false);
   });
 
-  it("canTransferOwnership: owner only", () => {
+  it("canTransferOwnership: owner only @spec:AC-022", () => {
     expect(canTransferOwnership("owner")).toBe(true);
     expect(canTransferOwnership("admin")).toBe(false);
     expect(canTransferOwnership("agent")).toBe(false);

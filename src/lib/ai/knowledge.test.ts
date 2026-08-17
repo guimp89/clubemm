@@ -63,7 +63,7 @@ beforeEach(() => {
   )
 })
 
-describe('retrieveKnowledge', () => {
+describe('retrieveKnowledge @spec:AC-017', () => {
   it('returns [] for an empty query without touching the DB', async () => {
     const { db, state } = makeDb()
     expect(await retrieveKnowledge(db, 'acct', { embeddingsApiKey: null }, '  ')).toEqual([])

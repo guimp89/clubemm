@@ -9,7 +9,7 @@ import {
   MAX_INVITE_EXPIRY_DAYS,
 } from "./invitations";
 
-describe("generateInviteToken", () => {
+describe("generateInviteToken @spec:AC-020", () => {
   it("returns a 43-character base64url token (32 raw bytes)", () => {
     const { token } = generateInviteToken();
     expect(token).toHaveLength(43);

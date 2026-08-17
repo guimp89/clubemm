@@ -17,7 +17,7 @@ function cbcEncryptLegacy(plaintext: string): string {
 }
 
 describe("encryption", () => {
-  describe("encrypt / decrypt round-trip", () => {
+  describe("encrypt / decrypt round-trip @spec:AC-025", () => {
     it("recovers the original plaintext", () => {
       const ct = encrypt("EAAG... fake WhatsApp token");
       expect(decrypt(ct)).toBe("EAAG... fake WhatsApp token");

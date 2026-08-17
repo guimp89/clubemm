@@ -64,7 +64,7 @@ beforeEach(() => {
 afterEach(() => vi.unstubAllGlobals());
 
 describe('dispatchWebhookEvent', () => {
-  it('signs + POSTs (no redirect follow) and resets failure_count on success', async () => {
+  it('signs + POSTs (no redirect follow) and resets failure_count on success @spec:AC-024', async () => {
     const fetchMock = vi.fn().mockResolvedValue({ ok: true, status: 200 } as Response);
     vi.stubGlobal('fetch', fetchMock);
     const calls = emptyCalls();

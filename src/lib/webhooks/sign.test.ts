@@ -4,7 +4,7 @@ import { buildSignatureHeader, verifySignatureHeader } from './sign';
 const secret = 'whsec_testsecret';
 const body = JSON.stringify({ event: 'message.received', data: { a: 1 } });
 
-describe('buildSignatureHeader', () => {
+describe('buildSignatureHeader @spec:AC-024', () => {
   it('emits the t=,v1= shape and is deterministic', () => {
     const h1 = buildSignatureHeader(body, secret, 1_700_000_000);
     const h2 = buildSignatureHeader(body, secret, 1_700_000_000);

@@ -33,7 +33,7 @@ describe("buildMediaPath", () => {
   });
 });
 
-describe("MEDIA_MAX_BYTES_BY_KIND", () => {
+describe("MEDIA_MAX_BYTES_BY_KIND @spec:AC-003", () => {
   it("caps images at Meta's tighter 5 MB limit", () => {
     expect(MEDIA_MAX_BYTES_BY_KIND.image).toBe(5 * 1024 * 1024);
   });

@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { buildHandoffSummary } from './handoff'
 
-describe('buildHandoffSummary', () => {
+describe('buildHandoffSummary @spec:AC-018', () => {
   it('notes the reply count and quotes the last customer message', () => {
     const summary = buildHandoffSummary({
       messages: [

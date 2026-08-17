@@ -12,7 +12,7 @@ import {
 const NOW = new Date("2026-06-22T12:00:00.000Z").getTime();
 const ago = (ms: number) => new Date(NOW - ms).toISOString();
 
-describe("derivePresence", () => {
+describe("derivePresence @spec:AC-002", () => {
   it("returns the stored status for a fresh heartbeat", () => {
     expect(derivePresence("online", ago(1_000), NOW)).toBe("online");
     expect(derivePresence("away", ago(1_000), NOW)).toBe("away");
@@ -74,7 +74,7 @@ describe("presenceLabel", () => {
   });
 });
 
-describe("summarize", () => {
+describe("summarize @spec:AC-002", () => {
   it("counts each status", () => {
     expect(
       summarize(["online", "online", "online", "away", "offline"]),

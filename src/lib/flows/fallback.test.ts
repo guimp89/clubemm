@@ -65,7 +65,7 @@ const POLICY_REPROMPT_2_HANDOFF: FlowFallbackPolicy = {
   on_exhaust: "handoff",
 };
 
-describe("decideFallback", () => {
+describe("decideFallback @spec:AC-015", () => {
   it("returns ignore when on_unknown_reply is 'ignore'", () => {
     expect(
       decideFallback({

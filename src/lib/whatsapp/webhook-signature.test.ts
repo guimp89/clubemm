@@ -9,7 +9,7 @@ function signedHeader(body: string, secret: string = SECRET): string {
   return `sha256=${hex}`;
 }
 
-describe("verifyMetaWebhookSignature", () => {
+describe("verifyMetaWebhookSignature @spec:AC-026", () => {
   it("accepts a request signed with the correct secret", () => {
     const body = JSON.stringify({ object: "whatsapp_business_account" });
     expect(verifyMetaWebhookSignature(body, signedHeader(body))).toBe(true);

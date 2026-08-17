@@ -19,7 +19,7 @@ describe("normalizeKey", () => {
   });
 });
 
-describe("isExactMatch", () => {
+describe("isExactMatch @spec:AC-006", () => {
   it("treats different formatting of the same digits as exact", () => {
     expect(isExactMatch({ id: "1", phone: "+1 555-123-4567" }, "15551234567")).toBe(
       true,
@@ -45,7 +45,7 @@ describe("isUniqueViolation", () => {
   });
 });
 
-describe("dedupeByPhone", () => {
+describe("dedupeByPhone @spec:AC-007", () => {
   it("keeps the first occurrence and counts in-file duplicates", () => {
     const { unique, duplicates } = dedupeByPhone([
       { phone: "+1 555-1111", name: "A" },
@@ -66,7 +66,7 @@ describe("dedupeByPhone", () => {
   });
 });
 
-describe("findExistingContact", () => {
+describe("findExistingContact @spec:AC-004", () => {
   // Minimal SupabaseClient stub: resolves the .from().select().eq().like()
   // chain to a fixed candidate set.
   function stubDb(rows: Array<{ id: string; phone: string }>): SupabaseClient {

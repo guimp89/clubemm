@@ -99,7 +99,7 @@ beforeEach(() => {
 })
 
 describe('dispatchInboundToAiReply — eligibility gates', () => {
-  it('claims a slot and sends on the happy path', async () => {
+  it('claims a slot and sends on the happy path @spec:AC-016', async () => {
     await dispatchInboundToAiReply(ARGS)
     expect(h.state.rpcCalls).toEqual([
       {
@@ -112,7 +112,7 @@ describe('dispatchInboundToAiReply — eligibility gates', () => {
     )
   })
 
-  it('grounds the reply in retrieved knowledge', async () => {
+  it('grounds the reply in retrieved knowledge @spec:AC-017', async () => {
     h.retrieveKnowledge.mockResolvedValue(['Returns accepted within 30 days.'])
     await dispatchInboundToAiReply(ARGS)
     expect(h.retrieveKnowledge).toHaveBeenCalled()

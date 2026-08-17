@@ -134,7 +134,7 @@ describe('resolveConversationByPhone', () => {
     ).rejects.toBeInstanceOf(SendMessageError);
   });
 
-  it('returns the existing contact + conversation without creating', async () => {
+  it('returns the existing contact + conversation without creating (dedup) @spec:AC-004', async () => {
     const db = makeDb({
       config: { user_id: 'owner-1' },
       contactCandidates: [{ id: 'c1', phone: '14155550123' }],
@@ -152,7 +152,7 @@ describe('resolveConversationByPhone', () => {
     });
   });
 
-  it('creates contact + conversation when none exist', async () => {
+  it('creates contact + conversation when none exist @spec:AC-005', async () => {
     const db = makeDb({
       config: { user_id: 'owner-1' },
       contactCandidates: [],

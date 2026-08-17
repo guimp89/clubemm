@@ -6,7 +6,7 @@ import {
   recipientStatusConfig,
 } from "./broadcast-status";
 
-describe("getBroadcastStatus", () => {
+describe("getBroadcastStatus @spec:AC-010", () => {
   it("returns the matching config for known statuses", () => {
     expect(getBroadcastStatus("sending")).toBe(broadcastStatusConfig.sending);
     expect(getBroadcastStatus("sent")).toBe(broadcastStatusConfig.sent);
@@ -37,7 +37,7 @@ describe("getBroadcastStatus", () => {
   });
 });
 
-describe("getRecipientStatus", () => {
+describe("getRecipientStatus @spec:AC-010", () => {
   it("returns the matching config for known statuses", () => {
     expect(getRecipientStatus("delivered")).toBe(
       recipientStatusConfig.delivered,

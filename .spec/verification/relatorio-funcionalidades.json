@@ -1,0 +1,147 @@
+{
+  "feature": "relatorio-funcionalidades",
+  "timestamp": "2026-08-17T15:00:21.434Z",
+  "gitRev": "b4c5766",
+  "command": "npx vitest run --reporter=tap",
+  "reporter": "tap",
+  "exitCode": 1,
+  "testsParsed": 912,
+  "results": {
+    "AC-001": {
+      "status": "pass",
+      "testName": "requires content_text for text messages, but never a template — free text is always allowed @spec:AC-001 # time=4.19ms",
+      "method": "tap"
+    },
+    "AC-002": {
+      "status": "pass",
+      "testName": "derivePresence @spec:AC-002 # time=6.09ms {",
+      "method": "tap"
+    },
+    "AC-003": {
+      "status": "pass",
+      "testName": "MEDIA_MAX_BYTES_BY_KIND @spec:AC-003 # time=0.71ms {",
+      "method": "tap"
+    },
+    "AC-004": {
+      "status": "pass",
+      "testName": "findExistingContact @spec:AC-004 # time=2.30ms {",
+      "method": "tap"
+    },
+    "AC-005": {
+      "status": "pass",
+      "testName": "creates contact + conversation when none exist @spec:AC-005 # time=0.59ms",
+      "method": "tap"
+    },
+    "AC-006": {
+      "status": "pass",
+      "testName": "isExactMatch @spec:AC-006 # time=0.80ms {",
+      "method": "tap"
+    },
+    "AC-007": {
+      "status": "pass",
+      "testName": "dedupeByPhone @spec:AC-007 # time=2.73ms {",
+      "method": "tap"
+    },
+    "AC-008": {
+      "status": "pass",
+      "testName": "resolveDealMove @spec:AC-008 # time=3.38ms {",
+      "method": "tap"
+    },
+    "AC-009": {
+      "status": "pass",
+      "testName": "fetchApprovedBroadcastTemplates @spec:AC-009 # time=4.81ms {",
+      "method": "tap"
+    },
+    "AC-010": {
+      "status": "pass",
+      "testName": "getBroadcastStatus @spec:AC-010 # time=6.27ms {",
+      "method": "tap"
+    },
+    "AC-011": {
+      "status": "pass",
+      "testName": "upserts contact_custom_values when the field is account-owned (trigger fires action) @spec:AC-011 # time=1.56ms",
+      "method": "tap"
+    },
+    "AC-012": {
+      "status": "pass",
+      "testName": "execution history — automation_logs @spec:AC-012 # time=1.24ms {",
+      "method": "tap"
+    },
+    "AC-013": {
+      "status": "pass",
+      "testName": "applyEdgeConnection @spec:AC-013 # time=1.83ms {",
+      "method": "tap"
+    },
+    "AC-014": {
+      "status": "pass",
+      "testName": "matchReplyId @spec:AC-014 # time=5.38ms {",
+      "method": "tap"
+    },
+    "AC-015": {
+      "status": "pass",
+      "testName": "decideFallback @spec:AC-015 # time=2.00ms {",
+      "method": "tap"
+    },
+    "AC-016": {
+      "status": "pass",
+      "testName": "claims a slot and sends on the happy path @spec:AC-016 # time=9.46ms",
+      "method": "tap"
+    },
+    "AC-017": {
+      "status": "pass",
+      "testName": "grounds the reply in retrieved knowledge @spec:AC-017 # time=1.51ms",
+      "method": "tap"
+    },
+    "AC-018": {
+      "status": "pass",
+      "testName": "buildHandoffSummary @spec:AC-018 # time=4.87ms {",
+      "method": "tap"
+    },
+    "AC-019": {
+      "status": "pass",
+      "testName": "logAiUsage @spec:AC-019 # time=9.78ms {",
+      "method": "tap"
+    },
+    "AC-020": {
+      "status": "pass",
+      "testName": "generateInviteToken @spec:AC-020 # time=24.03ms {",
+      "method": "tap"
+    },
+    "AC-021": {
+      "status": "pass",
+      "testName": "canSendMessages: agent+ only (viewer blocked from acting) @spec:AC-021 # time=0.26ms",
+      "method": "tap"
+    },
+    "AC-022": {
+      "status": "pass",
+      "testName": "canTransferOwnership: owner only @spec:AC-022 # time=0.24ms",
+      "method": "tap"
+    },
+    "AC-023": {
+      "status": "pass",
+      "testName": "403s when the key lacks the required scope @spec:AC-023 # time=1.03ms",
+      "method": "tap"
+    },
+    "AC-024": {
+      "status": "pass",
+      "testName": "signs + POSTs (no redirect follow) and resets failure_count on success @spec:AC-024 # time=8.79ms",
+      "method": "tap"
+    },
+    "AC-025": {
+      "status": "pass",
+      "testName": "encrypt / decrypt round-trip @spec:AC-025 # time=11.40ms {",
+      "method": "tap"
+    },
+    "AC-026": {
+      "status": "pass",
+      "testName": "verifyMetaWebhookSignature @spec:AC-026 # time=8.07ms {",
+      "method": "tap"
+    },
+    "AC-027": {
+      "status": "pass",
+      "testName": "loadConversationsSeries @spec:AC-027 # time=11.63ms {",
+      "method": "tap"
+    }
+  },
+  "principles": {}
+}

@@ -170,8 +170,33 @@ describe("runAutomationsForTrigger — tenant isolation", () => {
   });
 });
 
+describe("execution history — automation_logs @spec:AC-012", () => {
+  it("records a log entry per run with trigger, steps and a final status the logs screen can list", async () => {
+    h.state.owned = { id: "c1" };
+    h.state.automations = [automationWithUpdateStep()];
+    h.state.steps = [updateStep()];
+
+    await runAutomationsForTrigger({
+      accountId: ACCOUNT,
+      triggerType: "new_message_received",
+      contactId: "c1",
+      context: {},
+    });
+
+    // The log row is created up front (insert) and finalized with the
+    // run's outcome (update) — together these are what the logs page
+    // (`automations/[id]/logs`) lists per execution: date/time (row's
+    // created_at), trigger_event and status (success/partial/failed).
+    expect(h.state.fromCalls).toContain("automation_logs");
+    expect(h.state.logUpdates.length).toBeGreaterThan(0);
+    const finalUpdate = h.state.logUpdates[h.state.logUpdates.length - 1];
+    expect(finalUpdate.status).toBe("success");
+    expect(Array.isArray(finalUpdate.steps_executed)).toBe(true);
+  });
+});
+
 describe("update_contact_field — custom fields", () => {
-  it("upserts contact_custom_values when the field is account-owned", async () => {
+  it("upserts contact_custom_values when the field is account-owned (trigger fires action) @spec:AC-011", async () => {
     h.state.owned = { id: "c1" };
     h.state.ownedCustomField = { id: "cf1" };
     h.state.automations = [automationWithUpdateStep()];

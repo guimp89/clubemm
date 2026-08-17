@@ -49,12 +49,28 @@ describe('sendMessageToConversation — param validation (pre-DB)', () => {
     );
   });
 
-  it('requires content_text for text messages', async () => {
+  it('requires content_text for text messages, but never a template — free text is always allowed @spec:AC-001', async () => {
     await expectSendError(
       { ...base, messageType: 'text' },
       400,
       /content_text is required/
     );
+    // Unlike 'template', a plain-text send has no template_name gate at
+    // all — proven by the DB-explodes stub: validation passes with just
+    // content_text and the code proceeds straight to the conversation
+    // lookup (no "template_name is required" / approval check happens).
+    const spy = vi.fn(() => {
+      throw new Error('reached DB');
+    });
+    const db = { from: spy } as unknown as SupabaseClient;
+    await expect(
+      sendMessageToConversation(db, 'acct-1', {
+        ...base,
+        messageType: 'text',
+        contentText: 'Oi! Como posso ajudar?',
+      })
+    ).rejects.toThrow('reached DB');
+    expect(spy).toHaveBeenCalledWith('conversations');
   });
 
   it('requires template_name for template messages', async () => {
@@ -65,7 +81,7 @@ describe('sendMessageToConversation — param validation (pre-DB)', () => {
     );
   });
 
-  it('requires media_url for media kinds', async () => {
+  it('requires media_url for media kinds @spec:AC-003', async () => {
     for (const kind of ['image', 'video', 'document', 'audio']) {
       await expectSendError(
         { ...base, messageType: kind },

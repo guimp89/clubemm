@@ -8,7 +8,7 @@ function fakeDb() {
   return { db: db as unknown as SupabaseClient, insert, from: db.from }
 }
 
-describe('logAiUsage', () => {
+describe('logAiUsage @spec:AC-019', () => {
   it('inserts a row mapping normalized usage to the log columns', async () => {
     const { db, insert, from } = fakeDb()
     await logAiUsage(db, {

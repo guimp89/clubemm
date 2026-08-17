@@ -102,7 +102,7 @@ describe("requireApiKey", () => {
     expect(ctx.accountId).toBe("acct-1");
   });
 
-  it("403s when the key lacks the required scope", async () => {
+  it("403s when the key lacks the required scope @spec:AC-023", async () => {
     findActiveKeyByHash.mockResolvedValue(row({ scopes: ["contacts:read"] }));
     await expectApiError(
       requireApiKey(reqWith(`Bearer ${KEY}`), "messages:send"),
@@ -111,7 +111,7 @@ describe("requireApiKey", () => {
     );
   });
 
-  it("passes when the key has the required scope", async () => {
+  it("passes when the key has the required scope @spec:AC-023", async () => {
     findActiveKeyByHash.mockResolvedValue(row({ scopes: ["messages:send"] }));
     const ctx = await requireApiKey(reqWith(`Bearer ${KEY}`), "messages:send");
     expect(ctx.accountId).toBe("acct-1");

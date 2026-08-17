@@ -378,7 +378,7 @@ describe("outgoingSlots", () => {
   });
 });
 
-describe("applyEdgeConnection", () => {
+describe("applyEdgeConnection @spec:AC-013", () => {
   it("patches next_node_key for single-outgoing nodes", () => {
     const node: BuilderNode = {
       node_key: "a",

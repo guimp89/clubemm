@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { formatCurrency } from "@/lib/currency";
+import { resolveDealMove } from "@/lib/pipelines/deal-move";
 import { useTranslations } from "next-intl";
 
 interface PipelineBoardProps {
@@ -78,11 +79,10 @@ export function PipelineBoard({
     const dealId = String(active.id);
     const targetStageId = String(over.id);
 
-    const deal = deals.find((d) => d.id === dealId);
-    if (!deal || deal.stage_id === targetStageId) return;
-    if (!sortedStages.some((s) => s.id === targetStageId)) return;
+    const newStageId = resolveDealMove(deals, sortedStages, dealId, targetStageId);
+    if (!newStageId) return;
 
-    onDealMoved(dealId, targetStageId);
+    onDealMoved(dealId, newStageId);
   }
 
   function handleDragCancel() {
