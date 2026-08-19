@@ -10,6 +10,35 @@ export interface ParsedContactRow {
   company?: string;
   /** Tag names from the optional `tags` column (comma/semicolon separated). */
   tagNames: string[];
+  /** ISO date string (yyyy-mm-dd) from the optional `last_purchase_at` column. */
+  lastPurchaseAt?: string;
+}
+
+/**
+ * Parse a `last_purchase_at` cell into an ISO date string, or undefined
+ * if blank/unparseable. Accepts ISO (yyyy-mm-dd) and common BR format
+ * (dd/mm/yyyy) since that's what legacy sales exports use.
+ */
+export function parsePurchaseDateCell(value: string | undefined): string | undefined {
+  const trimmed = value?.trim();
+  if (!trimmed) return undefined;
+
+  const br = trimmed.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (br) {
+    const [, d, m, y] = br;
+    const date = new Date(Date.UTC(Number(y), Number(m) - 1, Number(d)));
+    if (
+      date.getUTCFullYear() === Number(y) &&
+      date.getUTCMonth() === Number(m) - 1 &&
+      date.getUTCDate() === Number(d)
+    ) {
+      return date.toISOString().slice(0, 10);
+    }
+    return undefined;
+  }
+
+  const date = new Date(trimmed);
+  return Number.isNaN(date.getTime()) ? undefined : date.toISOString().slice(0, 10);
 }
 
 /** Split a CSV cell into unique tag names (case-insensitive de-dupe). */
@@ -37,12 +66,19 @@ export interface ParseContactCsvResult {
   hasTagsColumn: boolean;
   /** True when the CSV header includes a `company` column. */
   hasCompanyColumn: boolean;
+  /** True when the CSV header includes a `last_purchase_at` column. */
+  hasLastPurchaseColumn: boolean;
 }
 
 export function parseContactCsv(text: string): ParseContactCsvResult {
   const lines = text.trim().split(/\r?\n/);
   if (lines.length < 2) {
-    return { rows: [], hasTagsColumn: false, hasCompanyColumn: false };
+    return {
+      rows: [],
+      hasTagsColumn: false,
+      hasCompanyColumn: false,
+      hasLastPurchaseColumn: false,
+    };
   }
 
   const headers = lines[0]
@@ -51,13 +87,19 @@ export function parseContactCsv(text: string): ParseContactCsvResult {
 
   const phoneIdx = headers.indexOf('phone');
   if (phoneIdx === -1) {
-    return { rows: [], hasTagsColumn: false, hasCompanyColumn: false };
+    return {
+      rows: [],
+      hasTagsColumn: false,
+      hasCompanyColumn: false,
+      hasLastPurchaseColumn: false,
+    };
   }
 
   const nameIdx = headers.indexOf('name');
   const emailIdx = headers.indexOf('email');
   const companyIdx = headers.indexOf('company');
   const tagsIdx = headers.indexOf('tags');
+  const lastPurchaseIdx = headers.indexOf('last_purchase_at');
 
   const rows: ParsedContactRow[] = [];
 
@@ -85,6 +127,10 @@ export function parseContactCsv(text: string): ParseContactCsvResult {
           : undefined,
       tagNames:
         tagsIdx >= 0 ? parseTagCell(values[tagsIdx]?.replace(/["']/g, '')) : [],
+      lastPurchaseAt:
+        lastPurchaseIdx >= 0
+          ? parsePurchaseDateCell(values[lastPurchaseIdx]?.replace(/["']/g, ''))
+          : undefined,
     });
   }
 
@@ -92,6 +138,7 @@ export function parseContactCsv(text: string): ParseContactCsvResult {
     rows,
     hasTagsColumn: tagsIdx >= 0,
     hasCompanyColumn: companyIdx >= 0,
+    hasLastPurchaseColumn: lastPurchaseIdx >= 0,
   };
 }
 

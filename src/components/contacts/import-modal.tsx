@@ -135,6 +135,7 @@ export function ImportModal({
   const [parsedRows, setParsedRows] = useState<ParsedContactRow[]>([]);
   const [hasTagsColumn, setHasTagsColumn] = useState(false);
   const [hasCompanyColumn, setHasCompanyColumn] = useState(false);
+  const [hasLastPurchaseColumn, setHasLastPurchaseColumn] = useState(false);
   const [tagColorByKey, setTagColorByKey] = useState<Map<string, string>>(
     new Map()
   );
@@ -173,6 +174,7 @@ export function ImportModal({
       rows,
       hasTagsColumn: csvHasTags,
       hasCompanyColumn: csvHasCompany,
+      hasLastPurchaseColumn: csvHasLastPurchase,
     } = parseContactCsv(text);
 
     if (rows.length === 0) {
@@ -180,6 +182,7 @@ export function ImportModal({
       setParsedRows([]);
       setHasTagsColumn(false);
       setHasCompanyColumn(false);
+      setHasLastPurchaseColumn(false);
       setTagColorByKey(new Map());
       return;
     }
@@ -187,6 +190,7 @@ export function ImportModal({
     setParsedRows(rows);
     setHasTagsColumn(csvHasTags);
     setHasCompanyColumn(csvHasCompany);
+    setHasLastPurchaseColumn(csvHasLastPurchase);
 
     if (csvHasTags && accountId) {
       const { data: tags } = await supabase
@@ -278,6 +282,7 @@ export function ImportModal({
           name: row.name || null,
           email: row.email || null,
           company: row.company || null,
+          last_purchase_at: row.lastPurchaseAt || null,
         }));
 
         const { data, error } = await supabase
@@ -378,6 +383,9 @@ export function ImportModal({
   // avoiding an all-dash column that wastes horizontal space.
   const previewHasCompany =
     hasCompanyColumn && preview.some((row) => row.company?.trim());
+  // Last purchase: AND — same reasoning as company.
+  const previewHasLastPurchase =
+    hasLastPurchaseColumn && preview.some((row) => row.lastPurchaseAt?.trim());
 
   const tagStats = useMemo(() => {
     const names = new Set<string>();
@@ -406,6 +414,7 @@ export function ImportModal({
                   emailCode: (chunks) => `<code class="rounded bg-muted px-1 py-0.5 text-[11px] text-muted-foreground">${chunks}</code>`,
                   companyCode: (chunks) => `<code class="rounded bg-muted px-1 py-0.5 text-[11px] text-muted-foreground">${chunks}</code>`,
                   tagsCode: (chunks) => `<code class="rounded bg-muted px-1 py-0.5 text-[11px] text-muted-foreground">${chunks}</code>`,
+                  lastPurchaseCode: (chunks) => `<code class="rounded bg-muted px-1 py-0.5 text-[11px] text-muted-foreground">${chunks}</code>`,
                 })
               }}
             />
@@ -506,6 +515,11 @@ export function ImportModal({
                             {t('columns.tags')}
                           </th>
                         )}
+                        {previewHasLastPurchase && (
+                          <th className="px-3 py-2 text-left font-medium whitespace-nowrap text-muted-foreground">
+                            {t('columns.lastPurchase')}
+                          </th>
+                        )}
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border/70">
@@ -546,6 +560,14 @@ export function ImportModal({
                               <ImportPreviewTags
                                 tagNames={row.tagNames}
                                 tagColorByKey={tagColorByKey}
+                              />
+                            </td>
+                          )}
+                          {previewHasLastPurchase && (
+                            <td className="px-3 py-2 whitespace-nowrap text-muted-foreground">
+                              <PreviewCell
+                                value={row.lastPurchaseAt || '—'}
+                                maxWidth="max-w-[6rem]"
                               />
                             </td>
                           )}

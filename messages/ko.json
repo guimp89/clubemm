@@ -299,6 +299,7 @@
         "email": "이메일",
         "company": "회사",
         "tags": "태그",
+        "lastPurchase": "마지막 구매",
         "createdAt": "생성일"
       },
       "loading": "연락처를 불러오는 중...",
@@ -417,7 +418,7 @@
     },
     "importModal": {
       "title": "연락처 가져오기",
-      "desc": "필수 <phoneCode>phone</phoneCode> 열이 포함된 CSV를 업로드하세요. 선택 항목: <nameCode>name</nameCode>, <emailCode>email</emailCode>, <companyCode>company</companyCode>, <tagsCode>tags</tagsCode> (쉼표로 구분; 여러 태그가 있는 셀은 따옴표로 묶으세요).",
+      "desc": "필수 <phoneCode>phone</phoneCode> 열이 포함된 CSV를 업로드하세요. 선택 항목: <nameCode>name</nameCode>, <emailCode>email</emailCode>, <companyCode>company</companyCode>, <tagsCode>tags</tagsCode> (쉼표로 구분; 여러 태그가 있는 셀은 따옴표로 묶으세요), <lastPurchaseCode>last_purchase_at</lastPurchaseCode> (날짜, 예: 2026-03-05 또는 05/03/2026).",
       "uploadDropzone": "클릭하여 CSV 파일 선택",
       "uploadHint": "브라우저 제한까지 .csv 업로드 가능",
       "rowsReady": "{count}개 행 준비됨",
@@ -439,7 +440,8 @@
         "name": "이름",
         "email": "이메일",
         "company": "회사",
-        "tags": "태그"
+        "tags": "태그",
+        "lastPurchase": "마지막 구매"
       },
       "cancel": "취소",
       "close": "닫기",

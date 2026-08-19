@@ -299,6 +299,7 @@
         "email": "Email",
         "company": "Company",
         "tags": "Tags",
+        "lastPurchase": "Last Purchase",
         "createdAt": "Created"
       },
       "loading": "Loading contacts...",
@@ -418,7 +419,7 @@
     },
     "importModal": {
       "title": "Import Contacts",
-      "desc": "Upload a CSV with a required <phoneCode>phone</phoneCode> column. Optional: <nameCode>name</nameCode>, <emailCode>email</emailCode>, <companyCode>company</companyCode>, <tagsCode>tags</tagsCode> (comma-separated; quote multi-tag cells).",
+      "desc": "Upload a CSV with a required <phoneCode>phone</phoneCode> column. Optional: <nameCode>name</nameCode>, <emailCode>email</emailCode>, <companyCode>company</companyCode>, <tagsCode>tags</tagsCode> (comma-separated; quote multi-tag cells), <lastPurchaseCode>last_purchase_at</lastPurchaseCode> (date, e.g. 2026-03-05 or 05/03/2026).",
       "uploadDropzone": "Click to choose a CSV file",
       "uploadHint": ".csv up to your browser limit",
       "rowsReady": "{count} row ready",
@@ -440,7 +441,8 @@
         "name": "Name",
         "email": "Email",
         "company": "Company",
-        "tags": "Tags"
+        "tags": "Tags",
+        "lastPurchase": "Last Purchase"
       },
       "cancel": "Cancel",
       "close": "Close",

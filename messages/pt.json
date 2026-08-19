@@ -299,6 +299,7 @@
         "email": "E-mail",
         "company": "Empresa",
         "tags": "Etiquetas",
+        "lastPurchase": "Última compra",
         "createdAt": "Criado em"
       },
       "loading": "Carregando contatos...",
@@ -418,7 +419,7 @@
     },
     "importModal": {
       "title": "Importar contatos",
-      "desc": "Envie um CSV com a coluna obrigatória <phoneCode>phone</phoneCode>. Opcional: <nameCode>name</nameCode>, <emailCode>email</emailCode>, <companyCode>company</companyCode>, <tagsCode>tags</tagsCode> (separadas por vírgula; use aspas em células com múltiplas etiquetas).",
+      "desc": "Envie um CSV com a coluna obrigatória <phoneCode>phone</phoneCode>. Opcional: <nameCode>name</nameCode>, <emailCode>email</emailCode>, <companyCode>company</companyCode>, <tagsCode>tags</tagsCode> (separadas por vírgula; use aspas em células com múltiplas etiquetas), <lastPurchaseCode>last_purchase_at</lastPurchaseCode> (data, ex. 2026-03-05 ou 05/03/2026).",
       "uploadDropzone": "Clique para escolher um arquivo CSV",
       "uploadHint": ".csv até o limite do seu navegador",
       "rowsReady": "{count} linha pronta",
@@ -440,7 +441,8 @@
         "name": "Nome",
         "email": "E-mail",
         "company": "Empresa",
-        "tags": "Etiquetas"
+        "tags": "Etiquetas",
+        "lastPurchase": "Última compra"
       },
       "cancel": "Cancelar",
       "close": "Fechar",

@@ -108,6 +108,10 @@ export interface Contact {
   email?: string;
   company?: string;
   avatar_url?: string;
+  /** Date of the contact's most recent purchase (migration 037). Not
+   *  derived from any in-app order system — set via CSV import or
+   *  manual edit. */
+  last_purchase_at?: string | null;
   created_at: string;
   updated_at: string;
   /** Hydrated by queries that embed `contact_tags(tags(*))` (e.g. the
