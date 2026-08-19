@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { cn } from "@/lib/utils";
+import { useDateFnsLocale } from "@/lib/locale";
 import type { Contact, Deal, ContactNote, Tag } from "@/types";
 import {
   Phone,
@@ -28,6 +29,7 @@ interface ContactSidebarProps {
 export function ContactSidebar({ contact }: ContactSidebarProps) {
   const tSidebar = useTranslations("Inbox.sidebar");
   const tThread = useTranslations("Inbox.messageThread");
+  const dateFnsLocale = useDateFnsLocale();
 
   const { accountId } = useAuth();
   const [copied, setCopied] = useState(false);
@@ -289,7 +291,7 @@ export function ContactSidebar({ contact }: ContactSidebarProps) {
                       {note.note_text}
                     </p>
                     <p className="mt-1 text-[10px] text-muted-foreground">
-                      {format(new Date(note.created_at), "MMM d, yyyy HH:mm")}
+                      {format(new Date(note.created_at), "PP HH:mm", { locale: dateFnsLocale })}
                     </p>
                   </div>
                 ))}

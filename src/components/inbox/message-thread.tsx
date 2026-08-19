@@ -7,6 +7,7 @@ import { usePresence } from "@/hooks/use-presence";
 import { PresenceDot } from "@/components/presence/presence-dot";
 import { presenceLabel } from "@/lib/presence";
 import { cn } from "@/lib/utils";
+import { useDateFnsLocale } from "@/lib/locale";
 import type {
   Conversation,
   Message,
@@ -29,6 +30,7 @@ import {
   PanelRightClose,
 } from "lucide-react";
 import { format, isToday, isYesterday, differenceInHours } from "date-fns";
+import type { Locale } from "date-fns";
 import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -111,11 +113,15 @@ interface MessageThreadProps {
   onToggleContactPanel?: () => void;
 }
 
-function formatDateSeparator(dateStr: string, t: ReturnType<typeof useTranslations>): string {
+function formatDateSeparator(
+  dateStr: string,
+  t: ReturnType<typeof useTranslations>,
+  dateFnsLocale: Locale,
+): string {
   const date = new Date(dateStr);
   if (isToday(date)) return t("today");
   if (isYesterday(date)) return t("yesterday");
-  return format(date, "MMMM d, yyyy");
+  return format(date, "PPP", { locale: dateFnsLocale });
 }
 
 function groupMessagesByDate(messages: Message[]) {
@@ -171,6 +177,7 @@ export function MessageThread({
   const t = useTranslations("Inbox.messageThread");
   const tTimer = useTranslations("Inbox.sessionTimer");
   const tQuote = useTranslations("Inbox.replyQuote");
+  const dateFnsLocale = useDateFnsLocale();
 
   const { user } = useAuth();
   const { getPresence, getRow, now } = usePresence();
@@ -1077,7 +1084,7 @@ export function MessageThread({
                 {/* Date separator */}
                 <div className="mb-4 flex items-center justify-center">
                   <span className="rounded-full bg-muted px-3 py-1 text-[10px] font-medium text-muted-foreground">
-                    {formatDateSeparator(group.date, t)}
+                    {formatDateSeparator(group.date, t, dateFnsLocale)}
                   </span>
                 </div>
                 {/* Messages */}

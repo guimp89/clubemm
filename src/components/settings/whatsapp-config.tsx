@@ -17,6 +17,7 @@ import {
 import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/hooks/use-auth';
 import { useTranslations } from 'next-intl';
+import { useIntlLocale } from '@/lib/locale';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -38,6 +39,7 @@ type ResetReason = 'token_corrupted' | 'meta_api_error' | null;
 
 export function WhatsAppConfig() {
   const t = useTranslations('Settings.whatsapp');
+  const intlLocale = useIntlLocale();
   const supabase = createClient();
   // After multi-user, whatsapp_config is one-row-per-account, not
   // one-row-per-user. We pull `accountId` straight off the auth
@@ -502,7 +504,7 @@ export function WhatsAppConfig() {
                   dangerouslySetInnerHTML={{
                     __html: t('subscribedSince', {
                       date: config.registered_at
-                        ? new Date(config.registered_at).toLocaleString()
+                        ? new Date(config.registered_at).toLocaleString(intlLocale)
                         : t('unknownDate'),
                     }),
                   }}

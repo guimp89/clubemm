@@ -41,6 +41,7 @@ import {
   LayoutTemplate,
 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { useIntlLocale } from '@/lib/locale';
 
 interface ContactDetailViewProps {
   open: boolean;
@@ -56,6 +57,7 @@ export function ContactDetailView({
   onUpdated,
 }: ContactDetailViewProps) {
   const t = useTranslations('Contacts.detailView');
+  const intlLocale = useIntlLocale();
   const supabase = createClient();
   const { accountId, defaultCurrency } = useAuth();
 
@@ -627,7 +629,7 @@ export function ContactDetailView({
                           </button>
                         </div>
                         <p className="text-xs text-muted-foreground mt-1.5">
-                          {new Date(note.created_at).toLocaleDateString('en-US', {
+                          {new Date(note.created_at).toLocaleDateString(intlLocale, {
                             month: 'short',
                             day: 'numeric',
                             year: 'numeric',

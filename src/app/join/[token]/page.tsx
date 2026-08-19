@@ -52,6 +52,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { createClient } from '@/lib/supabase/client';
+import { useIntlLocale } from '@/lib/locale';
 
 interface PeekOk {
   ok: true;
@@ -93,6 +94,7 @@ const FAIL_COPY: Record<PeekFail['reason'], { title: string; body: string }> = {
 export default function JoinPage() {
   const params = useParams<{ token: string }>();
   const token = params?.token;
+  const intlLocale = useIntlLocale();
 
   const [peek, setPeek] = useState<PeekResult | null>(null);
   // Local auth probe — the AuthProvider lives inside the (dashboard)
@@ -307,7 +309,7 @@ export default function JoinPage() {
           {ROLE_LABEL[peek.role]}
         </span>
         . Link valid until{' '}
-        {new Date(peek.expires_at).toLocaleDateString(undefined, {
+        {new Date(peek.expires_at).toLocaleDateString(intlLocale, {
           year: 'numeric',
           month: 'short',
           day: 'numeric',

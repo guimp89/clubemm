@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, type ReactNode } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { toast } from 'sonner';
 import type { Contact, Tag, ContactTag } from '@/types';
@@ -49,6 +49,9 @@ import {
   SlidersHorizontal,
   Filter,
   X,
+  ArrowUp,
+  ArrowDown,
+  ArrowUpDown,
 } from 'lucide-react';
 import { ContactForm } from '@/components/contacts/contact-form';
 import { ContactDetailView } from '@/components/contacts/contact-detail-view';
@@ -57,6 +60,7 @@ import { CustomFieldsManager } from '@/components/contacts/custom-fields-manager
 import { useCan } from '@/hooks/use-can';
 import { GatedButton } from '@/components/ui/gated-button';
 import { useTranslations } from 'next-intl';
+import { useIntlLocale } from '@/lib/locale';
 
 const PAGE_SIZE = 25;
 
@@ -66,6 +70,7 @@ interface ContactWithTags extends Contact {
 
 export default function ContactsPage() {
   const t = useTranslations('Contacts.page');
+  const intlLocale = useIntlLocale();
   const supabase = createClient();
   const canEdit = useCan('send-messages');
   const canEditSettings = useCan('edit-settings');
@@ -77,6 +82,20 @@ export default function ContactsPage() {
   const [totalCount, setTotalCount] = useState(0);
   // Tag filter — contacts shown must have ANY of these tags (OR).
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>([]);
+  // Column sort — 'name' (alphabetical), 'last_purchase_at', or 'created_at'.
+  const [sortBy, setSortBy] = useState<'name' | 'last_purchase_at' | 'created_at'>('created_at');
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
+
+  function toggleSort(column: 'name' | 'last_purchase_at' | 'created_at') {
+    setPage(0);
+    if (sortBy === column) {
+      setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
+    } else {
+      setSortBy(column);
+      // Name defaults to A→Z, dates default to most-recent-first.
+      setSortDir(column === 'name' ? 'asc' : 'desc');
+    }
+  }
 
   // Modals
   const [formOpen, setFormOpen] = useState(false);
@@ -147,6 +166,8 @@ export default function ContactsPage() {
         p_search: term || null,
         p_limit: PAGE_SIZE,
         p_offset: from,
+        p_sort_by: sortBy,
+        p_sort_dir: sortDir,
       });
       if (seq !== fetchSeq.current) return; // superseded by a newer fetch
       if (error) {
@@ -161,7 +182,7 @@ export default function ContactsPage() {
       let query = supabase
         .from('contacts')
         .select('*', { count: 'exact' })
-        .order('created_at', { ascending: false })
+        .order(sortBy, { ascending: sortDir === 'asc', nullsFirst: false })
         .range(from, to);
 
       if (term) {
@@ -211,7 +232,7 @@ export default function ContactsPage() {
 
     setContacts(enriched);
     setLoading(false);
-  }, [supabase, page, search, selectedTagIds, tagsMap, t]);
+  }, [supabase, page, search, selectedTagIds, sortBy, sortDir, tagsMap, t]);
 
   // Collect every contact id matching the current search/tag filter,
   // not just the page currently on screen. Paginates in large batches
@@ -665,13 +686,25 @@ export default function ContactsPage() {
                   aria-label="Select all contacts on this page"
                 />
               </TableHead>
-              <TableHead className="text-muted-foreground">{t('tableColumns.name')}</TableHead>
+              <TableHead className="text-muted-foreground">
+                <SortableHeader column="name" sortBy={sortBy} sortDir={sortDir} onClick={toggleSort}>
+                  {t('tableColumns.name')}
+                </SortableHeader>
+              </TableHead>
               <TableHead className="text-muted-foreground">{t('tableColumns.phone')}</TableHead>
               <TableHead className="text-muted-foreground hidden md:table-cell">{t('tableColumns.email')}</TableHead>
               <TableHead className="text-muted-foreground hidden lg:table-cell">{t('tableColumns.company')}</TableHead>
               <TableHead className="text-muted-foreground hidden md:table-cell">{t('tableColumns.tags')}</TableHead>
-              <TableHead className="text-muted-foreground hidden lg:table-cell">{t('tableColumns.lastPurchase')}</TableHead>
-              <TableHead className="text-muted-foreground hidden lg:table-cell">{t('tableColumns.createdAt')}</TableHead>
+              <TableHead className="text-muted-foreground hidden lg:table-cell">
+                <SortableHeader column="last_purchase_at" sortBy={sortBy} sortDir={sortDir} onClick={toggleSort}>
+                  {t('tableColumns.lastPurchase')}
+                </SortableHeader>
+              </TableHead>
+              <TableHead className="text-muted-foreground hidden lg:table-cell">
+                <SortableHeader column="created_at" sortBy={sortBy} sortDir={sortDir} onClick={toggleSort}>
+                  {t('tableColumns.createdAt')}
+                </SortableHeader>
+              </TableHead>
               <TableHead className="text-muted-foreground w-12" />
             </TableRow>
           </TableHeader>
@@ -764,7 +797,7 @@ export default function ContactsPage() {
                   </TableCell>
                   <TableCell className="text-muted-foreground text-xs hidden lg:table-cell">
                     {contact.last_purchase_at ? (
-                      new Date(contact.last_purchase_at).toLocaleDateString('en-US', {
+                      new Date(contact.last_purchase_at).toLocaleDateString(intlLocale, {
                         month: 'short',
                         day: 'numeric',
                         year: 'numeric',
@@ -774,7 +807,7 @@ export default function ContactsPage() {
                     )}
                   </TableCell>
                   <TableCell className="text-muted-foreground text-xs hidden lg:table-cell">
-                    {new Date(contact.created_at).toLocaleDateString('en-US', {
+                    {new Date(contact.created_at).toLocaleDateString(intlLocale, {
                       month: 'short',
                       day: 'numeric',
                       year: 'numeric',
@@ -970,5 +1003,35 @@ export default function ContactsPage() {
         </DialogContent>
       </Dialog>
     </div>
+  );
+}
+
+type SortColumn = 'name' | 'last_purchase_at' | 'created_at';
+
+function SortableHeader({
+  column,
+  sortBy,
+  sortDir,
+  onClick,
+  children,
+}: {
+  column: SortColumn;
+  sortBy: SortColumn;
+  sortDir: 'asc' | 'desc';
+  onClick: (column: SortColumn) => void;
+  children: ReactNode;
+}) {
+  const active = sortBy === column;
+  const Icon = active ? (sortDir === 'asc' ? ArrowUp : ArrowDown) : ArrowUpDown;
+
+  return (
+    <button
+      type="button"
+      onClick={() => onClick(column)}
+      className={`flex items-center gap-1 hover:text-foreground ${active ? 'text-foreground' : ''}`}
+    >
+      {children}
+      <Icon className="size-3" />
+    </button>
   );
 }

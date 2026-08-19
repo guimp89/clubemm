@@ -39,6 +39,7 @@ import {
   getRecipientStatus,
 } from '@/lib/broadcast-status';
 import { useTranslations } from 'next-intl';
+import { useIntlLocale } from '@/lib/locale';
 
 interface StatCardProps {
   label: string;
@@ -49,6 +50,7 @@ interface StatCardProps {
 }
 
 function StatCard({ label, value, total, icon, color }: StatCardProps) {
+  const intlLocale = useIntlLocale();
   const pct = total > 0 ? Math.round((value / total) * 100) : 0;
   return (
     <div className="rounded-xl border border-border bg-card p-4">
@@ -58,7 +60,7 @@ function StatCard({ label, value, total, icon, color }: StatCardProps) {
         </div>
         <span className="text-xs text-muted-foreground">{pct}%</span>
       </div>
-      <p className="mt-3 text-2xl font-bold text-foreground">{value.toLocaleString()}</p>
+      <p className="mt-3 text-2xl font-bold text-foreground">{value.toLocaleString(intlLocale)}</p>
       <p className="text-xs text-muted-foreground">{label}</p>
     </div>
   );
@@ -75,11 +77,12 @@ interface FunnelStep {
  * Width is relative to the largest step (typically Sent) so we
  * always render a full bar at the top and proportional tails.
  */
-function FunnelChart({ steps }: { steps: FunnelStep[] }) {
+function FunnelChart({ steps, label }: { steps: FunnelStep[]; label: string }) {
+  const intlLocale = useIntlLocale();
   const max = Math.max(...steps.map((s) => s.value), 1);
   return (
     <div className="rounded-xl border border-border bg-card p-4">
-      <h3 className="mb-4 text-sm font-medium text-foreground">Funnel</h3>
+      <h3 className="mb-4 text-sm font-medium text-foreground">{label}</h3>
       <div className="space-y-2">
         {steps.map((step) => {
           const pctOfMax = Math.max(5, Math.round((step.value / max) * 100));
@@ -98,7 +101,7 @@ function FunnelChart({ steps }: { steps: FunnelStep[] }) {
                   style={{ width: `${pctOfMax}%` }}
                 />
                 <span className="absolute inset-0 flex items-center px-3 text-xs font-medium text-foreground">
-                  {step.value.toLocaleString()}
+                  {step.value.toLocaleString(intlLocale)}
                   <span className="ml-2 text-muted-foreground/80">
                     ({pctOfSent}%)
                   </span>
@@ -147,6 +150,7 @@ export default function BroadcastDetailPage() {
   const router = useRouter();
   const t = useTranslations('Broadcasts.detail');
   const tStatus = useTranslations('Broadcasts.status');
+  const intlLocale = useIntlLocale();
   const broadcastId = params.id as string;
 
   const [broadcast, setBroadcast] = useState<Broadcast | null>(null);
@@ -394,7 +398,7 @@ export default function BroadcastDetailPage() {
         />
       </div>
 
-      <FunnelChart steps={funnelSteps} />
+      <FunnelChart steps={funnelSteps} label={t('funnel')} />
 
       {/* Recipients Table */}
       <div className="rounded-xl border border-border bg-card">
@@ -501,17 +505,17 @@ export default function BroadcastDetailPage() {
                       </TableCell>
                       <TableCell className="text-muted-foreground">
                         {recipient.sent_at
-                          ? new Date(recipient.sent_at).toLocaleString()
+                          ? new Date(recipient.sent_at).toLocaleString(intlLocale)
                           : '-'}
                       </TableCell>
                       <TableCell className="text-muted-foreground">
                         {recipient.delivered_at
-                          ? new Date(recipient.delivered_at).toLocaleString()
+                          ? new Date(recipient.delivered_at).toLocaleString(intlLocale)
                           : '-'}
                       </TableCell>
                       <TableCell className="text-muted-foreground">
                         {recipient.read_at
-                          ? new Date(recipient.read_at).toLocaleString()
+                          ? new Date(recipient.read_at).toLocaleString(intlLocale)
                           : '-'}
                       </TableCell>
                       <TableCell className="max-w-xs truncate text-xs text-red-400">

@@ -9,6 +9,7 @@ import { Bell, CheckCheck, Loader2, UserPlus } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useDateFnsLocale } from "@/lib/locale";
 import { toast } from "sonner";
 
 // Icon per notification type. Only one type exists today
@@ -19,6 +20,7 @@ const TYPE_ICON: Record<Notification["type"], typeof Bell> = {
 
 export default function NotificationsPage() {
   const router = useRouter();
+  const dateFnsLocale = useDateFnsLocale();
   const { accountId } = useAuth();
   const [notifications, setNotifications] = useState<Notification[] | null>(
     null,
@@ -254,6 +256,7 @@ export default function NotificationsPage() {
                     <p className="mt-1 text-[11px] text-muted-foreground/70">
                       {formatDistanceToNow(new Date(n.created_at), {
                         addSuffix: true,
+                        locale: dateFnsLocale,
                       })}
                     </p>
                   </div>
